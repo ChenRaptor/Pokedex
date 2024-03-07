@@ -3,6 +3,7 @@ package fr.iut.ab.pkdxapi.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.iut.ab.pkdxapi.models.PkmnDTO;
+import fr.iut.ab.pkdxapi.models.PkmnType;
 import fr.iut.ab.pkdxapi.models.response.PokemonTypeResponse;
 import fr.iut.ab.pkdxapi.services.PkmnService;
 
@@ -33,9 +34,8 @@ public class PkmnController {
         PkmnService.addPokemon(pkmnDTO);
     }
 
-    @PostMapping("/pkmn-api")
-    public void addPokemonFromApi() {
-        PkmnService.addPokemonFromApi();
+    @PostMapping("/pkmn/api")
+    public void addPokemonsFromApi() {
+        PkmnService.addPokemonsFromApi();
     }
-
 }

@@ -12,6 +12,7 @@ import fr.iut.ab.pkdxapi.models.PkmnDTO;
 import fr.iut.ab.pkdxapi.models.PkmnData;
 import fr.iut.ab.pkdxapi.models.PkmnType;
 import fr.iut.ab.pkdxapi.models.response.PokemonTypeResponse;
+import fr.iut.ab.pkdxapi.models.type.Pkmn;
 import fr.iut.ab.pkdxapi.repositories.PkmnRepository;
 
 
@@ -19,6 +20,8 @@ import fr.iut.ab.pkdxapi.repositories.PkmnRepository;
 public class PkmnService {
     @Autowired
     private PkmnRepository repository;
+
+    private String API_URL = "https://tyradex.vercel.app/api/v1/pokemon";
 
     public PokemonTypeResponse getAllPkmnTypes() {
         List<String> types = new ArrayList<>();
@@ -40,22 +43,20 @@ public class PkmnService {
         return repository.findByName(name).isPresent();
     }
 
-    public void addPokemonFromApi() {
-
-        private final String API_URL = "https://tyradex.vercel.app/api/v1/pokemon";
-        private RestTemplate restTemplate;
-
-        public PokemonService(RestTemplate restTemplate) {
-            this.restTemplate = restTemplate;
+    public void addPokemonsFromApi() {
+        RestTemplate restTemplate = new RestTemplate();
+        Pkmn[] result = restTemplate.getForObject(API_URL, Pkmn[].class);
+        for (Pkmn pkmn : result) {
+            if (!pkmnExist(pkmn.getName("fr"))) {
+                PkmnData pkmnData = new PkmnData(
+                    pkmn.getName("fr"),
+                    pkmn.getSprite("regular"),
+                    "",
+                    pkmn.getTypes(),
+                    new ArrayList<>()
+                );
+                repository.insert(pkmnData);
+            }
         }
-
-        public String getPokemonData() {
-            String pokemonData = restTemplate.getForObject(API_URL, String.class);
-            return pokemonData;
-        }
-
-
-
-
     }
 }

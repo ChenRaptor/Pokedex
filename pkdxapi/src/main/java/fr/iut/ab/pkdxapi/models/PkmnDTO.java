@@ -6,11 +6,11 @@ public class PkmnDTO {
     private String name;
     private String imgUrl;
     private String description;
-    private List<String> types;
+    private List<PkmnType> types;
     private List<PkmnRegion> regions;
 
 
-    public PkmnDTO(String name, String imgUrl, String description, List<String> types, List<PkmnRegion> regions){
+    public PkmnDTO(String name, String imgUrl, String description, List<PkmnType> types, List<PkmnRegion> regions){
         this.name=name;
         this.imgUrl=imgUrl;
         this.description=description;
@@ -30,7 +30,7 @@ public class PkmnDTO {
         return description;
     }
 
-    public List<String> getTypes(){
+    public List<PkmnType> getTypes(){
         return types;
     }
 

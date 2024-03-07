@@ -14,7 +14,7 @@ public class PkmnData extends PkmnDTO {
     @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
 
-    public PkmnData(String name, String imgUrl, String description, List<String> types, List<PkmnRegion> regions){
+    public PkmnData(String name, String imgUrl, String description, List<PkmnType> types, List<PkmnRegion> regions){
         super(name, imgUrl, description, types, regions);
         this.id = ObjectId.get();
     }
