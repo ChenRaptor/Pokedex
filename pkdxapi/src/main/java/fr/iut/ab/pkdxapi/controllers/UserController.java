@@ -1,6 +1,7 @@
 package fr.iut.ab.pkdxapi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,8 +20,8 @@ public class UserController {
         return UserDataService.registerUser(userDTO);
     }
 
-    @PostMapping("/users/test")
-    public String registerUser(@RequestBody String string) {
-        return string;
+    @GetMapping("/users/login")
+    public String loginUser() {
+        return "ok";
     }
 }

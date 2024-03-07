@@ -31,6 +31,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         UserData user = userData.get();
-        return new User(user.getLogin(), "{noop}"+user.getPassword(), authorities);
+        return new User(user.getLogin(), user.getPassword(), authorities);
     }
 }

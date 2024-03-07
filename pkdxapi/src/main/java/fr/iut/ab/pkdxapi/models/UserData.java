@@ -13,7 +13,7 @@ public class UserData extends UserDTO {
     private ObjectId id;
 
     public UserData(String login, String password, boolean isAdmin){
-        super(login, password, isAdmin); // Add this line to invoke the constructor of the superclass UserDTO
+        super(login, password, isAdmin);
         this.id = ObjectId.get();
     }
 

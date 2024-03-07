@@ -22,7 +22,8 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-          .requestMatchers("/users/register").permitAll() // authorize register user without authentication
+          .requestMatchers("/users/register").permitAll()
+          .requestMatchers("/users/login").authenticated() // authorize register user without authentication
           .requestMatchers("/pkmn/**").authenticated()
         )   // authorize all http requests with authentication        
         .httpBasic(Customizer.withDefaults()).csrf(csrf->csrf.disable()) ; // disable csrf security to authorize post, patch & delete
