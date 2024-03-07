@@ -21,11 +21,12 @@ public class SecurityConfiguration {
     private UserRepository userRepository;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-				.anyRequest().authenticated()
-			)   // authorize all http requests with authentication        
-			.httpBasic(Customizer.withDefaults()).csrf(csrf->csrf.disable()) ; // disable csrf security to authorize post, patch & delete
-		return http.build();
+      http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
+          .requestMatchers("/users/register").permitAll() // authorize register user without authentication
+          .requestMatchers("/pkmn/**").authenticated()
+        )   // authorize all http requests with authentication        
+        .httpBasic(Customizer.withDefaults()).csrf(csrf->csrf.disable()) ; // disable csrf security to authorize post, patch & delete
+      return http.build();
     }
     @Bean
     public UserDetailsService userDetailsService(){

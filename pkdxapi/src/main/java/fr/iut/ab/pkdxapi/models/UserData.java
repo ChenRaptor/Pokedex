@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("User")
 @TypeAlias("UserData")
-public class UserData extends UserDTO{
+public class UserData extends UserDTO {
 
     @Id
     private ObjectId id;
