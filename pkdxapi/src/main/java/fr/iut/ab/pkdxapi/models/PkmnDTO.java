@@ -5,9 +5,9 @@ import java.util.List;
 public class PkmnDTO {
     private String name;
     private String imgUrl;
-    private String description;
-    private List<PkmnType> types;
-    private List<PkmnRegion> regions;
+    protected String description;
+    protected List<PkmnType> types;
+    protected List<PkmnRegion> regions;
 
 
     public PkmnDTO(String name, String imgUrl, String description, List<PkmnType> types, List<PkmnRegion> regions){

@@ -35,7 +35,7 @@ public enum PkmnType {
         typeMap.put("Électrik", ELECTRIC);
         typeMap.put("Insecte", BUG);
         typeMap.put("Plante", GRASS);
-        typeMap.put("Psychique", PSYCHIC);
+        typeMap.put("Psy", PSYCHIC);
         typeMap.put("Sol", GROUND);
         typeMap.put("Ténèbres", DARK);
         typeMap.put("Combat", FIGHTING);

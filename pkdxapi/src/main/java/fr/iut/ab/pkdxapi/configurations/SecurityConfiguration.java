@@ -4,6 +4,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +25,9 @@ public class SecurityConfiguration {
       http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
           .requestMatchers("/users/register").permitAll()
           .requestMatchers("/users/login").authenticated() // authorize register user without authentication
-          .requestMatchers("/pkmn/**").authenticated()
+          .requestMatchers(HttpMethod.DELETE, "/pkmn/**").hasAuthority("ROLE_ADMIN")
+          .requestMatchers(HttpMethod.PUT, "/pkmn/**").hasAuthority("ROLE_ADMIN")
+          .requestMatchers("/trainer/**", "/pkmn/**", "/pkmn", "/trainer", "/trainer/mark").authenticated()
         )   // authorize all http requests with authentication        
         .httpBasic(Customizer.withDefaults()).csrf(csrf->csrf.disable()) ; // disable csrf security to authorize post, patch & delete
       return http.build();
