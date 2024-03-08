@@ -24,8 +24,8 @@ public class TrainerData extends TrainerDTO {
 
     private Date creationDate;
 
-    private List<ObjectId> pkmnSeen;
-    private List<ObjectId> pkmnCatch;
+    private List<String> pkmnSeen;
+    private List<String> pkmnCatch;
 
     private String username;
 
@@ -42,22 +42,29 @@ public class TrainerData extends TrainerDTO {
         return id;
     }
 
-    public List<ObjectId> getPkmnSeen(){
+    public Date getCreationDate(){
+        return creationDate;
+    }
+
+    public List<String> getPkmnSeen(){
         return pkmnSeen;
     }
 
     public void setPkmnSeen(ObjectId pkmnId){
-        this.pkmnSeen.add(pkmnId);
+        if (this.pkmnSeen.stream().noneMatch(pkmnSeenSimple -> pkmnSeenSimple.equals(pkmnId.toString()))) {
+            this.pkmnSeen.add(pkmnId.toString());
+        }
     }
 
-    public List<ObjectId> getPkmnCatch(){
+    public List<String> getPkmnCatch(){
         return pkmnCatch;
     }
 
     public void setPkmnCatch(ObjectId pkmnId){
-        this.pkmnCatch.add(pkmnId);
+        if (this.pkmnCatch.stream().noneMatch(pkmnCatchSimple -> pkmnCatchSimple.equals(pkmnId.toString()))) {
+            this.pkmnCatch.add(pkmnId.toString());
+        }
     }
-
 
     public String getUsername(){
         return username;
