@@ -4,16 +4,20 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.iut.ab.pkdxapi.errors.PkmnNotFoundException;
 import fr.iut.ab.pkdxapi.errors.TrainerAlreadyExistException;
 import fr.iut.ab.pkdxapi.errors.TrainerNotFoundException;
 import fr.iut.ab.pkdxapi.models.TrainerDTO;
 import fr.iut.ab.pkdxapi.models.TrainerData;
+import fr.iut.ab.pkdxapi.repositories.PkmnRepository;
 import fr.iut.ab.pkdxapi.repositories.TrainerRepository;
 
 @Service
 public class TrainerService {
     @Autowired
     private TrainerRepository repository;
+    @Autowired
+    private PkmnRepository pkmnRepository;
 
     public TrainerData postTrainer(TrainerDTO trainerCreationData, String username) {
         TrainerData trainerData = new TrainerData(
@@ -61,6 +65,9 @@ public class TrainerService {
     }
 
     public void mark(String username, boolean captured, ObjectId pkmnId) {
+        if(!pkmnRepository.findById(pkmnId).isPresent()) {
+            throw new PkmnNotFoundException("Pokemon not found");
+        }
         if (trainerExist(username)) {
             TrainerData trainer = getTrainer(username);
             if (captured) {
