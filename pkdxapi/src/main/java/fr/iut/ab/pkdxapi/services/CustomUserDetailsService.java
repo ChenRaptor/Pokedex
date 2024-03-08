@@ -17,11 +17,9 @@ import org.springframework.security.core.userdetails.User;
 
 public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
-    private List<GrantedAuthority> authorities = new ArrayList<>();
 
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        authorities.add(AuthorityUtils.createAuthorityList("ROLE_USER").get(0));
     }
 
     @Override
@@ -31,6 +29,15 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         UserData user = userData.get();
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        authorities.add(AuthorityUtils.createAuthorityList("ROLE_USER").get(0));
+
+        if (user.getIsAdmin()) {
+            authorities.add(AuthorityUtils.createAuthorityList("ROLE_ADMIN").get(0));
+        }
+
         return new User(user.getLogin(), user.getPassword(), authorities);
     }
 }

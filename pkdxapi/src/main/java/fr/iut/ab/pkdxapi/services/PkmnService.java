@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +18,6 @@ import fr.iut.ab.pkdxapi.models.PkmnDTO;
 import fr.iut.ab.pkdxapi.models.PkmnData;
 import fr.iut.ab.pkdxapi.models.PkmnRegion;
 import fr.iut.ab.pkdxapi.models.PkmnType;
-import fr.iut.ab.pkdxapi.models.UserData;
 import fr.iut.ab.pkdxapi.models.response.PokemonTypeResponse;
 import fr.iut.ab.pkdxapi.models.type.Pkmn;
 import fr.iut.ab.pkdxapi.repositories.PkmnRepository;

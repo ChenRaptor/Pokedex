@@ -9,7 +9,6 @@ import fr.iut.ab.pkdxapi.models.PkmnType;
 import fr.iut.ab.pkdxapi.models.response.PokemonTypeResponse;
 import fr.iut.ab.pkdxapi.services.PkmnService;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;

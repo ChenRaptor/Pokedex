@@ -1,14 +1,11 @@
 package fr.iut.ab.pkdxapi.services;
 
-import java.util.Optional;
-
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.iut.ab.pkdxapi.errors.TrainerAlreadyExistException;
 import fr.iut.ab.pkdxapi.errors.TrainerNotFoundException;
-import fr.iut.ab.pkdxapi.models.PkmnData;
 import fr.iut.ab.pkdxapi.models.TrainerDTO;
 import fr.iut.ab.pkdxapi.models.TrainerData;
 import fr.iut.ab.pkdxapi.repositories.TrainerRepository;
