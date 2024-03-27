@@ -24,9 +24,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http.authorizeHttpRequests((authorizeRequests) -> authorizeRequests
           .requestMatchers("/users/register").permitAll()
-          .requestMatchers("/users/login").authenticated() // authorize register user without authentication
+          .requestMatchers(HttpMethod.GET, "/pkmn/**").permitAll()
           .requestMatchers(HttpMethod.DELETE, "/pkmn/**").hasAuthority("ROLE_ADMIN")
           .requestMatchers(HttpMethod.PUT, "/pkmn/**").hasAuthority("ROLE_ADMIN")
+          .requestMatchers(HttpMethod.POST, "/pkmn/**").hasAuthority("ROLE_ADMIN")
+          .requestMatchers("/users/login").authenticated() // authorize register user without authentication
           .requestMatchers("/trainer/**", "/pkmn/**", "/pkmn", "/trainer", "/trainer/mark").authenticated()
         )   // authorize all http requests with authentication        
         .httpBasic(Customizer.withDefaults()).csrf(csrf->csrf.disable()) ; // disable csrf security to authorize post, patch & delete
