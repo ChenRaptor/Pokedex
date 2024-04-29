@@ -88,22 +88,7 @@ const colorTypes = {
     bg: "bg-blue-300",
     image: "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/vol.png",
     shadow: "rgb(90 200 250 / 50%)"
-  },
-  UNKNOWN: {
-    bg: "bg-gray-500",
-    image: "",
-    shadow: "rgb(156 163 175 / 50%)"
-  },
-  SHADOW: {
-    bg: "bg-black",
-    image: "",
-    shadow: "rgb(0 0 0 / 50%)"
-  },
-  CELESTIAL: {
-    bg: "bg-yellow-300",
-    image: "",
-    shadow: "rgba(255, 204, 92, 0.5)"
-  },
+  }
 }
 
 export default colorTypes

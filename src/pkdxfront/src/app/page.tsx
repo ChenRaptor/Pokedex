@@ -6,7 +6,7 @@ import { Suspense } from "react";
 export default function Home() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div className="container mx-auto py-16">
+      <div className="container mx-auto py-16 space-y-8">
         <PokemonsSearch />
         <PokemonsContainer />
       </div>

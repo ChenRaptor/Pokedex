@@ -102,7 +102,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   <Suspense fallback={null}>
                   <SiteHeader />
                   </Suspense>
-                  <main className="flex-1">{children}</main>
+                  <main className="flex-1 relative z-0">{children}</main>
                   {/* <SiteFooter /> */}
                 </div>
               </div>

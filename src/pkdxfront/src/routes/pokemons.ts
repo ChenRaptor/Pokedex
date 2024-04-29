@@ -2,7 +2,7 @@ import { fetchApi } from "."
 
 const prefix = "pkmn"
 
-type PokemonType = "STEEL" | "DRAGON" | "ELECTRIC" | "FIRE" | "BUG" | "GRASS" | "PSYCHIC" | "GROUND" | "DARK" | "FIGHTING" | "WATER" | "FAIRY" | "ICE" | "NORMAL" | "POISON" | "ROCK" | "GHOST" | "FLYING" | "UNKNOWN" | "SHADOW" | "CELESTIAL"
+type PokemonType = "STEEL" | "DRAGON" | "ELECTRIC" | "FIRE" | "BUG" | "GRASS" | "PSYCHIC" | "GROUND" | "DARK" | "FIGHTING" | "WATER" | "FAIRY" | "ICE" | "NORMAL" | "POISON" | "ROCK" | "GHOST" | "FLYING"
 
 interface Pokemon {
   name: string,

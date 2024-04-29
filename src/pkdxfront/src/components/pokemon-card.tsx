@@ -13,15 +13,17 @@ import { Pokemon } from "@/routes/pokemons"
 import Image from "next/image"
 import { Badge } from "@/registry/new-york/ui/badge"
 import colorTypes from "@/config/type"
+import {useRouter} from "next/navigation"
 
 interface PokemonCardProps {
   pokemon: Pokemon
 }
 
 export function PokemonCard({pokemon} : PokemonCardProps) {
+  const router = useRouter()
 
   return (
-    <Card className="group">
+    <Card className="group" onClick={() => router.push(`http://localhost:3000/pokemons/${pokemon.name}`)}>
       <CardHeader>
         <CardTitle className="">{pokemon.name}</CardTitle>
         <CardDescription>{pokemon.description}</CardDescription>
