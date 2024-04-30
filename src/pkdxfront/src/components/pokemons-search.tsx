@@ -1,21 +1,13 @@
 "use client"
 import colorTypes from "@/config/type"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/registry/new-york/ui/card"
-import { Checkbox } from "@/registry/new-york/ui/checkbox"
 import { Input } from "@/registry/new-york/ui/input"
 import { Label } from "@/registry/new-york/ui/label"
-import { PokemonType } from "@/routes/pokemons"
-import Image from "next/image"
-import { useQueryStates, useQueryState, parseAsString } from 'nuqs'
+import { useQueryStates, useQueryState, parseAsString, parseAsInteger } from 'nuqs'
+import PokemonsTypeCheckbox from "./pokemons-type-checkbox"
 
 export function PokemonsSearch() {
-  const [partialNameInURL, setPartialNameInURL] = useQueryState('partialName')
+  const [partialNameInURL, setPartialNameInURL] = useQueryState('partialName', {history: 'push'})
+  const [pkmnByPage, setPkmnByPage] = useQueryState('size', parseAsInteger.withOptions({ history: 'push' }).withDefault(10))
 
   const [typesInURL, setTypesInURL] = useQueryStates(
     {
@@ -27,83 +19,69 @@ export function PokemonsSearch() {
     }
   )
 
-  const typesInURLNotNullable = [typesInURL.typeOne, typesInURL.typeTwo]
+  const typesInURLNotNullable = [typesInURL.typeOne, typesInURL.typeTwo];
 
   const handleTypeChange = (type: string, primaryType?: boolean) => {
+    let updatedTypeOne = typesInURL.typeOne;
+    let updatedTypeTwo = typesInURL.typeTwo;
+
     if (primaryType === true) {
-      if (typesInURL.typeOne === type) {
-        setTypesInURL({
-          typeOne: null,
-          typeTwo: typesInURL.typeTwo
-        })
-        return
-      }
-      setTypesInURL({
-        typeOne: type,
-        typeTwo: typesInURL.typeTwo
-      })
+      updatedTypeOne = typesInURL.typeOne === type ? null : type;
     } else if (primaryType === false) {
-      if (typesInURL.typeTwo === type) {
-        setTypesInURL({
-          typeOne: typesInURL.typeOne,
-          typeTwo: null
-        })
-        return
-      }
-      setTypesInURL({
-        typeOne: typesInURL.typeOne,
-        typeTwo: type
-      })
+      updatedTypeTwo = typesInURL.typeTwo === type ? null : type;
     } else {
       if (typesInURL.typeOne === null) {
-        setTypesInURL({
-          typeOne: type,
-          typeTwo: typesInURL.typeTwo
-        })
+        updatedTypeOne = type;
       } else if (typesInURL.typeTwo === null) {
-        setTypesInURL({
-          typeOne: typesInURL.typeOne,
-          typeTwo: type
-        })
+        updatedTypeTwo = type;
       }
     }
+
+    setTypesInURL({
+      typeOne: updatedTypeOne,
+      typeTwo: updatedTypeTwo
+    });
   }
 
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Recherche un pokemon</CardTitle>
-        <CardDescription>
-          Add a new payment method to your account.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2">
+    <div className="space-y-8">
+      <div>
+        <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Bienvenue à mon </span>
+          Pokedex.
+        </h1>
+        <p className="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">Explorez un monde de merveilles avec notre Pokédex ultime ! Découvrez une pléthore de Pokémon fascinants, des créatures aussi variées que mystérieuses. Que vous soyez un dresseur aguerri ou un novice curieux, plongez dans notre Pokédex pour en apprendre davantage sur ces êtres fantastiques qui peuplent notre monde. Que l&apos;aventure commence !</p>
+      </div>
+      <h2 className="text-4xl font-bold dark:text-white">Recherchez un pokemon</h2>
+
+      <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2 space-y-2">
+            <Label htmlFor="name">Nom du pokemon</Label>
+            <Input id="name" placeholder="Nom" onChange={(event) => setPartialNameInURL(event.target.value)} value={partialNameInURL ?? ""}/>
+          </div>
+          <div className="grid gap-2 space-y-2">
+            <Label htmlFor="pkmnByPage">Nombre de pokemon par page</Label>
+            <Input type="number" id="pkmnByPage" placeholder="10" onChange={(event) => setPkmnByPage(Number(event.target.value))} value={pkmnByPage ?? 10}/>
+          </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Type du pokemon</Label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-9 gap-2">
           {
             Object.keys(colorTypes).map((type) => (
-              <div key={type}>
-                <Checkbox id={type} className="hidden" />
-                <div className="grid gap-1.5 leading-none h-32" onClick={() => handleTypeChange(type, typesInURLNotNullable.includes(type) ? typesInURL.typeOne === type : undefined)}>
-                  <Label
-                    htmlFor={type}
-                    className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary ${typesInURLNotNullable.includes(type) ? 'border-primary' : ''}`}
-                  >
-                    <Image src={colorTypes[type as PokemonType].image} alt="Credit card" width={48} height={48} />
-                    <h4>{type}</h4>
-                    <p className="text-slate-400">{typesInURLNotNullable.includes(type) ? typesInURL.typeOne === type ? "primary" : "secondary" : null}</p>
-                  </Label>
-                </div>
-              </div>
+              <PokemonsTypeCheckbox
+                key={type}
+                type={type}
+                typesInURL={typesInURL}
+                typesInURLNotNullable={typesInURLNotNullable}
+                handleTypeChange={handleTypeChange}
+              />
             ))
           }
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Nom" onChange={(event) => setPartialNameInURL(event.target.value)} value={partialNameInURL ?? ""}/>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

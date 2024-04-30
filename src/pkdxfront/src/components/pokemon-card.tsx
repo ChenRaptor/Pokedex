@@ -23,7 +23,7 @@ export function PokemonCard({pokemon} : PokemonCardProps) {
   const router = useRouter()
 
   return (
-    <Card className="group" onClick={() => router.push(`http://localhost:3000/pokemons/${pokemon.name}`)}>
+    <Card className={`group ${pokemon.types[0] && colorTypes[pokemon.types[0]].bg} grayscale-[50%] hover:grayscale-0 transition-all`} onClick={() => router.push(`http://localhost:3000/pokemons/${pokemon.name}`)}>
       <CardHeader>
         <CardTitle className="">{pokemon.name}</CardTitle>
         <CardDescription>{pokemon.description}</CardDescription>
@@ -33,7 +33,7 @@ export function PokemonCard({pokemon} : PokemonCardProps) {
       </CardContent>
       <CardFooter className="flex gap-2">
         {pokemon.types.map((type) => (
-          <Badge key={pokemon.id + type} className={colorTypes[type].bg}>{type}</Badge>
+          <Badge key={pokemon.id + type} className={`${colorTypes[type].bg} hover:${colorTypes[type].bg}`}>{type}</Badge>
         ))}
       </CardFooter>
     </Card>
