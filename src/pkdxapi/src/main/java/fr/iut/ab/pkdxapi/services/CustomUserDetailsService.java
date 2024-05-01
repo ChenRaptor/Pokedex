@@ -24,10 +24,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) {
+
         Optional<UserData> userData = userRepository.findByLogin(login);
+
         if (userData == null) {
             throw new UsernameNotFoundException("User not found");
         }
+
         UserData user = userData.get();
 
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -38,6 +41,12 @@ public class CustomUserDetailsService implements UserDetailsService {
             authorities.add(AuthorityUtils.createAuthorityList("ROLE_ADMIN").get(0));
         }
 
-        return new User(user.getLogin(), user.getPassword(), authorities);
+        UserDetails userDetails = User.builder()
+            .username(user.getLogin())
+            .password(user.getPassword())
+            .authorities(authorities)
+            .build();
+
+        return userDetails;
     }
 }

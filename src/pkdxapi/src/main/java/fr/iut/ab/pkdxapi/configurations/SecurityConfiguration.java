@@ -4,13 +4,13 @@ import org.springframework.security.config.Customizer;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
@@ -30,6 +29,7 @@ import fr.iut.ab.pkdxapi.services.CustomUserDetailsService;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+	@Autowired
 	private UserRepository userRepository;
 
 	@Bean
@@ -37,18 +37,25 @@ public class SecurityConfiguration {
 		return http
 			.csrf(csrf -> csrf.disable())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/users/login").authenticated()
+				.requestMatchers("/users/register").permitAll()
+				.requestMatchers(HttpMethod.GET, "/pkmn/**").permitAll()
+				.requestMatchers(HttpMethod.DELETE, "/pkmn/**").hasAuthority("ROLE_ADMIN")
+				.requestMatchers(HttpMethod.PUT, "/pkmn/**").hasAuthority("ROLE_ADMIN")
+				.requestMatchers(HttpMethod.POST, "/pkmn/**").hasAuthority("ROLE_ADMIN")
+				.requestMatchers("/users/login").authenticated() // authorize register user without authentication
+				.requestMatchers("/trainer/**", "/pkmn/**", "/pkmn", "/trainer", "/trainer/mark").authenticated()
+			)
 			.httpBasic(Customizer.withDefaults())
 			.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
 			.build();
 	}
 
 	@Bean
-	public UserDetailsService users() {
-		UserDetails user = User.builder().username("user").password(passwordEncoder().encode("password")).roles("USER")
-				.build();
-		return new InMemoryUserDetailsManager(user);
-	}
+    public UserDetailsService userDetailsService(){
+        return new CustomUserDetailsService(userRepository);
+    }
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
