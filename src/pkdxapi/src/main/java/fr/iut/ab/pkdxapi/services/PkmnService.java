@@ -80,9 +80,9 @@ public class PkmnService {
         RestTemplate restTemplate = new RestTemplate();
         Pkmn[] result = restTemplate.getForObject(API_URL, Pkmn[].class);
         for (Pkmn pkmn : result) {
-            if (!pkmnExist(pkmn.getName("fr"))) {
+            if (!pkmnExist(pkmn.getName("en"))) {
                 PkmnData pkmnData = new PkmnData(
-                    pkmn.getName("fr"),
+                    pkmn.getName("en"),
                     pkmn.getSprite("regular"),
                     "",
                     pkmn.getTypes(),

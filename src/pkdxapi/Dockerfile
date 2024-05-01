@@ -1,5 +1,4 @@
-From tomcat:8.0.51-jre8-alpine
-
-COPY target/pkdxapi.war /usr/local/tomcat/webapps/
-
-CMD ["catalina.sh", "run"]
+FROM eclipse-temurin:17-jdk-alpine
+VOLUME /tmp
+COPY target/pkdxapi.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]

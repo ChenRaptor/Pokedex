@@ -1,0 +1,14 @@
+version: "3"
+services:
+  pkdxapimongo:
+    image: mongo:latest
+    container_name: "pkdxapimongo"
+    ports:
+      - 27017:27017
+  pkdxapi:
+    image: pkdxapi
+    container_name: pkdxapi
+    ports:
+      - 8080:8080
+    links:
+      - pkdxapimongo
