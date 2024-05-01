@@ -23,9 +23,14 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 
+import fr.iut.ab.pkdxapi.repositories.UserRepository;
+import fr.iut.ab.pkdxapi.services.CustomUserDetailsService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+	private UserRepository userRepository;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
