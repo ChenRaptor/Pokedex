@@ -1,3 +1,5 @@
+#!/bin/bash
+
 JAVA_HOME='/opt/jdk-21.0.2'
 PATH="$JAVA_HOME/bin:$PATH"
 export PATH
