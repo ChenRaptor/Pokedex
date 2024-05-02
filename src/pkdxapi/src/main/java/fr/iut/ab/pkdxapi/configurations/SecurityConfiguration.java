@@ -44,7 +44,7 @@ public class SecurityConfiguration {
 				.requestMatchers(HttpMethod.DELETE, "/pkmn/**").hasAuthority("ROLE_ADMIN")
 				.requestMatchers(HttpMethod.PUT, "/pkmn/**").hasAuthority("ROLE_ADMIN")
 				.requestMatchers(HttpMethod.POST, "/pkmn/**").hasAuthority("ROLE_ADMIN")
-				.requestMatchers("/users/login").authenticated() // authorize register user without authentication
+				.requestMatchers("/users/login").authenticated()
 				.requestMatchers("/trainer/**", "/pkmn/**", "/pkmn", "/trainer", "/trainer/mark").authenticated()
 			)
 			.httpBasic(Customizer.withDefaults())

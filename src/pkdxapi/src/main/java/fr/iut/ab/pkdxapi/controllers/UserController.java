@@ -20,6 +20,7 @@ public class UserController {
 
     @PostMapping("/users/register")
     public UserData registerUser(@RequestBody UserDTO userDTO) {
+        System.out.println(userDTO);
         return UserDataService.registerUser(userDTO);
     }
 

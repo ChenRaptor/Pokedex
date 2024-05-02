@@ -27,11 +27,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Optional<UserData> userData = userRepository.findByLogin(login);
 
+        System.out.println(login);
+
         if (userData == null) {
             throw new UsernameNotFoundException("User not found");
         }
 
         UserData user = userData.get();
+
+        System.out.println(user);
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
