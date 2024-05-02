@@ -1,91 +1,78 @@
 package fr.iut.ab.pkdxapi.configurations;
+import fr.iut.ab.pkdxapi.filters.JwtRequestFilter;
 
-import org.springframework.security.config.Customizer;
+import fr.iut.ab.pkdxapi.services.AuthEntryPointJwt;
+import fr.iut.ab.pkdxapi.services.CustomUserDetailsService;
 
-import javax.crypto.spec.SecretKeySpec;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-
-import fr.iut.ab.pkdxapi.repositories.UserRepository;
-import fr.iut.ab.pkdxapi.services.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	@Autowired
-	private UserRepository userRepository;
-
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http
-			.csrf(csrf -> csrf.disable())
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/users/login").authenticated()
-				.requestMatchers("/users/register").permitAll()
-				.requestMatchers(HttpMethod.GET, "/pkmn/**").permitAll()
-				.requestMatchers(HttpMethod.DELETE, "/pkmn/**").hasAuthority("ROLE_ADMIN")
-				.requestMatchers(HttpMethod.PUT, "/pkmn/**").hasAuthority("ROLE_ADMIN")
-				.requestMatchers(HttpMethod.POST, "/pkmn/**").hasAuthority("ROLE_ADMIN")
-				.requestMatchers("/users/login").authenticated()
-				.requestMatchers("/trainer/**", "/pkmn/**", "/pkmn", "/trainer", "/trainer/mark").authenticated()
-			)
-			.httpBasic(Customizer.withDefaults())
-			.oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt -> jwt
-				.jwtAuthenticationConverter(jwtAuthenticationConverter())
-			))
-			.build();
-	}
-
-	@Bean
-    public UserDetailsService userDetailsService(){
-        return new CustomUserDetailsService(userRepository);
+    private UserDetailsService userDetailsService;
+    private JwtRequestFilter jwtRequestFilter;
+    private AuthEntryPointJwt  authEntryPointJwt;
+    public SecurityConfiguration(CustomUserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter, AuthEntryPointJwt authEntryPointJwt) {
+        this.userDetailsService = userDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
+        this.authEntryPointJwt = authEntryPointJwt;
     }
 
-	@Bean
-	public JwtAuthenticationConverter jwtAuthenticationConverter() {
-		JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-		grantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
 
-		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-		return jwtAuthenticationConverter;
-	}
+    @Bean
+    public static PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-	private String jwtKey = "k583to182ms8h53k9oltqtem101sg20m0nxmxy5b50t05wj137257b8apm4c8dl7ybzh9iy0eqv69278z6o0400808qq67z5o1nqkgh7biho85479949a4t4mrsf0p3lfre06v9168yt84n23u91r4bk9r77p470ivj8y0ajm0r57xsnqq8w92bq9i3z4w3xi894h5nj55a7n6m5b4a6215q0k4wkhd7ua26oj882253jr4c13k2pe3je18sem69";
+    @Bean
+    @Primary
+    public AuthenticationManagerBuilder configureAuthenticationManagerBuilder(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        return authenticationManagerBuilder;
+    }
 
-	@Bean
-	public JwtDecoder jwtDecoder() {
-		SecretKeySpec secretKey = new SecretKeySpec(this.jwtKey.getBytes(), 0, this.jwtKey.getBytes().length,"RSA");
-		return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests((authorizeRequests) ->
+            authorizeRequests
+                .requestMatchers(HttpMethod.PUT, "/pkmn/**", "/pkmn").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/pkmn/**", "/pkmn").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/pkmn/**", "/pkmn").permitAll()
 
-	@Bean
-	public JwtEncoder jwtEncoder() {
-		return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
-	}
+                .requestMatchers(HttpMethod.GET,"/trainer/**", "/trainer").permitAll()
+                .requestMatchers("/trainer/**", "/trainer").authenticated()
+
+                .requestMatchers(HttpMethod.PUT, "/users/admin").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/users/login", "/users/register", "/users/logged").permitAll()
+                .requestMatchers("/users/me").authenticated()
+            )
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(except -> except.authenticationEntryPoint(authEntryPointJwt))
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+            .httpBasic(Customizer.withDefaults()).csrf(csrf->csrf.disable());
+
+        return http.build();
+    }
 }

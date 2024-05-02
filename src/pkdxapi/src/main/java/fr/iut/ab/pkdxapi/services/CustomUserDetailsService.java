@@ -1,6 +1,5 @@
 package fr.iut.ab.pkdxapi.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,46 +9,39 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import fr.iut.ab.pkdxapi.models.UserData;
+import fr.iut.ab.pkdxapi.models.user.UserData;
 import fr.iut.ab.pkdxapi.repositories.UserRepository;
 
 import org.springframework.security.core.userdetails.User;
 
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserRepository userRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
+    private UserRepository userRepository;
+    private List<GrantedAuthority> userAuthorities;
+    private List<GrantedAuthority> adminAuthorities;
+
+
+    public CustomUserDetailsService(UserRepository userRepository){
         this.userRepository = userRepository;
+        userAuthorities = AuthorityUtils.createAuthorityList("ROLE_USER");
+        adminAuthorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN","ROLE_USER");
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) {
-
-        Optional<UserData> userData = userRepository.findByLogin(login);
-
-        System.out.println(login);
-
-        if (userData == null) {
-            throw new UsernameNotFoundException("User not found");
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<UserData> data = userRepository.findById(username);
+        if(!data.isPresent()) {
+            throw new UsernameNotFoundException(username);
         }
 
-        UserData user = userData.get();
+        UserData user = data.get();
+        List<GrantedAuthority> authorities = user.getIsAdmin() ? adminAuthorities : userAuthorities;
 
-        System.out.println(user);
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-
-        authorities.add(AuthorityUtils.createAuthorityList("ROLE_USER").get(0));
-
-        if (user.getIsAdmin()) {
-            authorities.add(AuthorityUtils.createAuthorityList("ROLE_ADMIN").get(0));
-        }
-
-        UserDetails userDetails = User.builder()
-            .username(user.getLogin())
-            .password(user.getPassword())
-            .authorities(authorities)
-            .build();
+        UserDetails userDetails = new User(
+            user.getLogin(),
+            user.getPassword(),
+            authorities
+        );
 
         return userDetails;
     }
