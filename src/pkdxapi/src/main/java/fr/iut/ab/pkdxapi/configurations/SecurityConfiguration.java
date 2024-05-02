@@ -18,6 +18,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
@@ -48,7 +50,9 @@ public class SecurityConfiguration {
 				.requestMatchers("/trainer/**", "/pkmn/**", "/pkmn", "/trainer", "/trainer/mark").authenticated()
 			)
 			.httpBasic(Customizer.withDefaults())
-			.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+			.oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt -> jwt
+				.jwtAuthenticationConverter(jwtAuthenticationConverter())
+			))
 			.build();
 	}
 
@@ -56,6 +60,16 @@ public class SecurityConfiguration {
     public UserDetailsService userDetailsService(){
         return new CustomUserDetailsService(userRepository);
     }
+
+	@Bean
+	public JwtAuthenticationConverter jwtAuthenticationConverter() {
+		JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+		grantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
+
+		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+		return jwtAuthenticationConverter;
+	}
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
