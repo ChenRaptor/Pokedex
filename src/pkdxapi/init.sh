@@ -13,6 +13,12 @@ cd ./src/main/resources
 
 # Démarrer les conteneurs Docker en arrière-plan
 echo "Starting Docker containers..."
-docker-compose up -d
+docker compose up -d
 
 echo "Deployment completed successfully!"
+
+docker compose down
+
+docker compose up -d
+
+echo "Launching completed successfully!"
