@@ -64,7 +64,7 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET,"/trainer/**", "/trainer").permitAll()
                 .requestMatchers("/trainer/**", "/trainer").authenticated()
 
-                .requestMatchers(HttpMethod.PUT, "/users/admin").hasAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/users/admin").permitAll()
                 .requestMatchers("/users/login", "/users/register", "/users/logged").permitAll()
                 .requestMatchers("/users/me").authenticated()
             )
