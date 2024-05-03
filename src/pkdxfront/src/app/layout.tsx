@@ -1,3 +1,4 @@
+
 import "@/styles/globals.css"
 import { Metadata, Viewport } from "next"
 
@@ -12,6 +13,7 @@ import { ThemeSwitcher } from "@/components/theme-switcher"
 import { ApiProvider } from "@/components/api-provider"
 import SiteHeader from "@/components/site-header"
 import { Suspense } from "react"
+import { Toaster } from "@/registry/new-york/ui/toaster"
 // import { Toaster as DefaultToaster } from "@/registry/default/ui/toaster"
 // import { Toaster as NewYorkSonner } from "@/registry/new-york/ui/sonner"
 // import { Toaster as NewYorkToaster } from "@/registry/new-york/ui/toaster"
@@ -104,6 +106,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </Suspense>
                   <main className="flex-1 relative z-0">{children}</main>
                   {/* <SiteFooter /> */}
+                  <Toaster />
                 </div>
               </div>
               <ThemeSwitcher />

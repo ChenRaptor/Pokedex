@@ -42,10 +42,22 @@ interface GetPokemonsResponse {
   empty: boolean
 }
 
-async function getPokemons(query: string) : Promise<GetPokemonsResponse> {
-  const res = await fetchApi('GET',`${prefix}/search?${query}`)
-  return await res.json()
+interface PkmnDTO {
+  name: string,
+  description: string,
+  types: PokemonType[],
+  regions: {regionName: string, regionNumber: number}[],
+  imgUrl: string
 }
 
-export { getPokemons }
-export type { Pokemon, GetPokemonsResponse, PokemonType }
+async function getPokemons(query: string) : Promise<GetPokemonsResponse | {error: string}> {
+  return await fetchApi('GET',`${prefix}/search?${query}`,{}) as unknown as GetPokemonsResponse | {error: string}
+}
+
+async function addPokemons(token: string, pkmnDTO: PkmnDTO) : Promise<{error: string}> {
+  return await fetchApi('POST',`${prefix}`,{token, body: pkmnDTO, noreturn: true}) as unknown as {error: string}
+}
+
+
+export { getPokemons, addPokemons }
+export type { Pokemon, GetPokemonsResponse, PokemonType, PkmnDTO }

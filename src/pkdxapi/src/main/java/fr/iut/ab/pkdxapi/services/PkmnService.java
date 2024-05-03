@@ -180,4 +180,16 @@ public class PkmnService {
             throw new PkmnNotFoundException("Pokemon not found.");
         }
     }
+
+    public List<PkmnData> getListOfPokemonFromIds(List<ObjectId> ids) {
+        List<PkmnData> pkmns = new ArrayList<>();
+        for (ObjectId id : ids) {
+            Optional<PkmnData> pkmn = repository.findById(id);
+            if (pkmn.isPresent()) {
+                pkmns.add(pkmn.get());
+            }
+        }
+
+        return pkmns;
+    }
 }

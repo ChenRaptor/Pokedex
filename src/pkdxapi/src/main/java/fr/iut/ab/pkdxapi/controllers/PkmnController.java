@@ -89,4 +89,9 @@ public class PkmnController {
     public void addPokemonsFromApi() {
         PkmnService.addPokemonsFromApi();
     }
+
+    @PostMapping("/pkmn/ids")
+    public List<PkmnData> getMethodName(@RequestBody List<ObjectId> ids) {
+        return pkmnService.getListOfPokemonFromIds(ids);
+    }
 }

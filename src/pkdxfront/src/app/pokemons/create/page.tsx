@@ -1,9 +1,18 @@
-import { CreatePokemonCard } from "@/components/create-pokemon-card";
+"use server"
+import { getTokenInCookies } from "@/lib/cookies";
+import { redirect } from "next/navigation";
+import AddPokemonForm from "./components/add-pokemon-form";
 
-export default function CreatePage() {
+export default async function CreatePage() {
+
+  const token = await getTokenInCookies()
+  if (token === undefined) {
+    redirect("/")
+  }
+
   return (
     <div className="container mx-auto py-16">
-      <CreatePokemonCard />
+      <AddPokemonForm token={token.value} />
     </div>
   );
 }

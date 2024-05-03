@@ -12,21 +12,29 @@ import colorTypes from "@/config/type"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/registry/new-york/ui/card"
 import { PokemonEditDialog } from "./components/pokemon-edit-dialog"
 import { PokemonDeleteDialog } from "./components/pokemon-delete-dialog"
+import PokedexVoiceSpeak from "@/app/pokemons/[slug]/components/text-to-speech"
+
 
 export default async function PokemonPage ({params}: PokemonPageProps) {
   const { slug } = params
   const pokemon = await getPokemonSSR(slug)
   console.log(pokemon)
+
+  const audioText = pokemon.description || "Plusieurs variations de Lorem Ipsum peuvent être trouvées ici ou là, mais la majeure partie d'entre elles a été altérée par l'addition d'humour ou de mots aléatoires qui ne ressemblent pas une seconde à du texte standard. Si vous voulez utiliser un passage du Lorem Ipsum, vous devez être sûr qu'il n'y a rien d'embarrassant caché dans le texte. Tous les générateurs de Lorem Ipsum sur Internet tendent à reproduire le même extrait sans fin, ce qui fait de lipsum.com le seul vrai générateur de Lorem Ipsum. Iil utilise un dictionnaire de plus de 200 mots latins, en combinaison de plusieurs structures de phrases, pour générer un Lorem Ipsum irréprochable. Le Lorem Ipsum ainsi obtenu ne contient aucune répétition, ni ne contient des mots farfelus, ou des touches d'humour."
   return (
     <div className="container mx-auto py-16">
       <PokemonEditDialog pkmn={pokemon}/>
       <PokemonDeleteDialog pkmn={pokemon}/>
+      <PokedexVoiceSpeak text={audioText}/>
+
+
+
       <div className="grid grid-cols-2">
         <div className="space-y-4">
           <Card className="h-fit">
             <CardHeader className="space-y-4">
               <CardTitle className="text-3xl font-bold dark:text-white">{pokemon.name}</CardTitle>
-              <CardDescription className="text-justify">{pokemon.description === '' && "Plusieurs variations de Lorem Ipsum peuvent être trouvées ici ou là, mais la majeure partie d'entre elles a été altérée par l'addition d'humour ou de mots aléatoires qui ne ressemblent pas une seconde à du texte standard. Si vous voulez utiliser un passage du Lorem Ipsum, vous devez être sûr qu'il n'y a rien d'embarrassant caché dans le texte. Tous les générateurs de Lorem Ipsum sur Internet tendent à reproduire le même extrait sans fin, ce qui fait de lipsum.com le seul vrai générateur de Lorem Ipsum. Iil utilise un dictionnaire de plus de 200 mots latins, en combinaison de plusieurs structures de phrases, pour générer un Lorem Ipsum irréprochable. Le Lorem Ipsum ainsi obtenu ne contient aucune répétition, ni ne contient des mots farfelus, ou des touches d'humour."}</CardDescription>
+              <CardDescription className="text-justify">{audioText}</CardDescription>
             </CardHeader>
           </Card>
 
